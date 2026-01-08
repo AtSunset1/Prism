@@ -1,0 +1,33 @@
+# 忽略脚本文件夹（测试脚本）
+scripts/
+
+# 忽略文档文件夹
+docs/
+
+# Go 相关
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE 相关
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统相关
+.DS_Store
+Thumbs.db
+
+# 依赖相关
+vendor/
+
+# 配置文件中的敏感信息
+*.env
+*.env.local
+config/local.yaml
