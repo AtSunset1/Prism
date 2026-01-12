@@ -1,0 +1,26 @@
+2026/01/12 22:52:26 ⚠️  使用测试API密钥（开发模式）
+2026/01/12 22:52:26 ✓ GLM适配器初始化成功
+2026/01/12 22:52:26 ✓ ChatHandler初始化成功
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> github.com/AtSunset1/prism/internal/router.handleWelcome (3 handlers)
+[GIN-debug] GET    /health                   --> github.com/AtSunset1/prism/internal/router.handleHealthCheck (3 handlers)
+[GIN-debug] POST   /v1/chat/completions      --> github.com/AtSunset1/prism/internal/handler.(*ChatHandler).HandleChatCompletion-fm (3 handlers)
+2026/01/12 22:52:26 ========================================
+2026/01/12 22:52:26 🚀 Prism AI Gateway 启动成功
+2026/01/12 22:52:26 📍 监听地址: http://localhost:8080
+2026/01/12 22:52:26 📚 接口文档:
+2026/01/12 22:52:26    - GET  /           欢迎页面
+2026/01/12 22:52:26    - GET  /health     健康检查
+2026/01/12 22:52:26    - POST /v1/chat/completions  聊天补全
+2026/01/12 22:52:26 ========================================
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8080
+[GIN-debug] [ERROR] listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+2026/01/12 22:52:26 ❌ 启动失败:listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+exit status 1

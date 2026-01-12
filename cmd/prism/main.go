@@ -1,27 +1,77 @@
 package main
 
-import(
-	"github.com/gin-gonic/gin"
-	"net/http"
+import (
+	"log"
+	"os"
+
+	"github.com/AtSunset1/prism/internal/adapter/glm"
+	"github.com/AtSunset1/prism/internal/handler"
+	"github.com/AtSunset1/prism/internal/router"
 )
 
-func main(){
-	r:=gin.Default();
+// TestAPIKey 测试用API密钥（仅用于开发测试）
+// 生产环境应使用环境变量 GLM_API_KEY
+const TestAPIKey = ""
 
-	r.GET("/",func(c *gin.Context){
-		c.JSON(http.StatusOK,gin.H{
-			"message": "Welcome to Prism AI Gateway!",
-			"version": "0.1.0",
-			"status":  "running",
-		})
-	})
+func main() {
+	// 1. 初始化配置
+	apiKey := initConfig()
 
-	r.GET("/health",func(c *gin.Context){
-		c.JSON(http.StatusOK,gin.H{
-			"status": "healthy",
-		})
-	})
+	// 2. 初始化适配器和处理器
+	chatHandler := initHandlers(apiKey)
 
-	// 启动HTTP服务器，监听8080端口
-	r.Run(":8080")
+	// 3. 设置路由
+	r := router.SetupRouter(chatHandler)
+
+	// 4. 启动服务器
+	startServer(r)
+}
+
+// initConfig 初始化配置
+// 返回API密钥
+func initConfig() string {
+	apiKey := os.Getenv("GLM_API_KEY")
+	if apiKey == "" {
+		// 如果环境变量未设置，使用测试密钥
+		apiKey = TestAPIKey
+		log.Println("⚠️  使用测试API密钥（开发模式）")
+	} else {
+		log.Println("✓ 使用环境变量API密钥（生产模式）")
+	}
+	return apiKey
+}
+
+// initHandlers 初始化适配器和处理器
+// 参数：
+//   - apiKey: API密钥
+// 返回：
+//   - *handler.ChatHandler: 聊天处理器
+func initHandlers(apiKey string) *handler.ChatHandler {
+	// 创建GLM适配器
+	glmAdapter := glm.NewGLMAdapter(apiKey)
+	log.Println("✓ GLM适配器初始化成功")
+
+	// 创建ChatHandler
+	chatHandler := handler.NewChatHandler(glmAdapter)
+	log.Println("✓ ChatHandler初始化成功")
+
+	return chatHandler
+}
+
+// startServer 启动HTTP服务器
+// 参数：
+//   - r: Gin路由器
+func startServer(r interface{ Run(addr ...string) error }) {
+	log.Println("========================================")
+	log.Println("🚀 Prism AI Gateway 启动成功")
+	log.Println("📍 监听地址: http://localhost:8080")
+	log.Println("📚 接口文档:")
+	log.Println("   - GET  /           欢迎页面")
+	log.Println("   - GET  /health     健康检查")
+	log.Println("   - POST /v1/chat/completions  聊天补全")
+	log.Println("========================================")
+
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal("❌ 启动失败:", err)
+	}
 }
