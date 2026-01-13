@@ -31,3 +31,4 @@ vendor/
 *.env
 *.env.local
 config/local.yaml
+nul
