@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/AtSunset1/prism/internal/adapter"
 	"github.com/AtSunset1/prism/internal/adapter/glm"
 	"github.com/AtSunset1/prism/internal/handler"
 	"github.com/AtSunset1/prism/internal/router"
@@ -51,8 +52,26 @@ func initHandlers(apiKey string) *handler.ChatHandler {
 	glmAdapter := glm.NewGLMAdapter(apiKey)
 	log.Println("✓ GLM适配器初始化成功")
 
-	// 创建ChatHandler
-	chatHandler := handler.NewChatHandler(glmAdapter)
+	// 创建适配器管理器
+	manager := adapter.NewAdapterManager()
+
+	// 注册GLM适配器（支持多个模型名）
+	// GLM-4系列模型都使用同一个适配器实例
+	if err := manager.Register("glm-4", glmAdapter); err != nil {
+		log.Fatal("❌ 注册glm-4失败:", err)
+	}
+	if err := manager.Register("glm-4-flash", glmAdapter); err != nil {
+		log.Fatal("❌ 注册glm-4-flash失败:", err)
+	}
+	if err := manager.Register("glm-4-air", glmAdapter); err != nil {
+		log.Fatal("❌ 注册glm-4-air失败:", err)
+	}
+
+	log.Println("✓ 适配器管理器初始化成功")
+	log.Printf("✓ 已注册模型: %v", manager.ListModels())
+
+	// 创建ChatHandler（使用管理器而非单个适配器）
+	chatHandler := handler.NewChatHandler(manager)
 	log.Println("✓ ChatHandler初始化成功")
 
 	return chatHandler
